@@ -1,17 +1,35 @@
-from pathlib import Path
+def total_salary(path: str) -> tuple[int, int]:
+    total_salary = 0
+    developers_count = 0
 
-# 1. Створення .gitignore
-gitignore_content = """.idea/
-.venv/
-__pycache__/
-"""
-Path(".gitignore").write_text(gitignore_content)
+    try:
+        with open(path, 'r', encoding="utf-8") as f:
+            for line in f:
+                developer_line = line.strip().split(",")
 
-# 2. Перейменування main.py на 1.py
-main_file = Path("main.py")
-if main_file.exists():
-    main_file.rename("1.py")
+                if len(developer_line) != 2:
+                    print(f"Specify the salary for {developer_line[0]}")
+                    continue
 
-# 3. Створення файлів 2.py, 3.py, 4.py
-for i in range(2, 5):
-    Path(f"{i}.py").touch()
+                salary = developer_line[1]
+                total_salary += int(salary)
+                developers_count += 1
+
+        if developers_count == 0:
+            return 0, 0
+
+        average_salary = total_salary // developers_count
+
+        return total_salary, average_salary
+
+    except FileNotFoundError:
+        print("File not found")
+        return 0, 0
+    except ValueError:
+        print("Incorrect data format in file")
+        return 0, 0
+
+
+
+total, average = total_salary("data/salary_file.txt")
+print(f"Загальна сума заробітної плати: {total}, Середня заробітна плата: {average}")
